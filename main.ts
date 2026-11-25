@@ -13,9 +13,13 @@ mkdirSync("/output", { recursive: true });
 writeFileSync(OUTPUT_PATH, EXCUSE, "utf8");
 
 // Self-check: read it back, compare byte-for-byte, and enforce the 1-200 char gate.
+// A valid entry is exactly one line: no newline, no trailing whitespace.
 const written = readFileSync(OUTPUT_PATH, "utf8");
 if (written !== EXCUSE) {
   throw new Error(`Self-check failed: ${OUTPUT_PATH} differs from the excuse line.`);
+}
+if (written.length !== EXCUSE.length || written.includes("\n") || written !== written.trim()) {
+  throw new Error(`Self-check failed: ${OUTPUT_PATH} must hold exactly the one excuse line.`);
 }
 if (EXCUSE.includes("\n") || EXCUSE.length < 1 || EXCUSE.length > 200) {
   throw new Error(
